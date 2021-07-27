@@ -225,26 +225,21 @@ export default class RichToolbar extends Component {
             : selected
             ? that.props.selectedIconTint
             : that.props.iconTint;
+
+        // allow rendering of default, react component or image w/ src
+        const renderIcon = typeof icon === 'function'
+            ? icon({selected, disabled, tintColor, iconSize, iconGap})
+            : React.isValidElement(icon)
+            ? icon
+            : <Image source={icon} style={{tintColor, height: iconSize, width: iconSize }} />;
+
         return (
             <TouchableOpacity
                 key={action}
                 disabled={disabled}
                 style={[{width: iconGap + iconSize}, styles.item, itemStyle, style]}
                 onPress={() => that._onPress(action)}>
-                {icon ? (
-                    typeof icon === 'function' ? (
-                        icon({selected, disabled, tintColor, iconSize, iconGap})
-                    ) : (
-                        <Image
-                            source={icon}
-                            style={{
-                                tintColor,
-                                height: iconSize,
-                                width: iconSize,
-                            }}
-                        />
-                    )
-                ) : null}
+                {icon ? renderIcon : null}
             </TouchableOpacity>
         );
     }
